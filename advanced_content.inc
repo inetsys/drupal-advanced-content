@@ -54,17 +54,6 @@ function _advanced_content_get_content(){
 	$query->entityCondition('entity_type', 'node');
 	$query->addTag('node_admin_filter');
 
-	if(!user_access('bypass node access')){
-		if(user_access('view own unpublished content')){
-			$query->condition(db_or()
-				->propertyCondition('status', NODE_PUBLISHED)
-				->propertyCondition('uid', $GLOBALS['user']->uid)
-			);
-		}else{
-			// If not, restrict the query to published nodes.
-			$query->propertyCondition('status', NODE_PUBLISHED);
-		}
-	}
 	$query
 		->pager(variable_get('admin_content_elements_per_page', 20))
 		->tableSort($header)

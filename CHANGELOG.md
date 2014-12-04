@@ -1,5 +1,11 @@
 # Advanced content
 
+## Version 1.2
+
+Date: 2014/12/04
+
+- FIX EntityQuery conditions in content administration page
+
 ## Version 1.1  
 
 Date: 2014/11/18

@@ -27,18 +27,14 @@ function advanced_content_menu(){
 	return $items;
 }
 
-/**
- * Implementation of hook_menu_alter
- */
+/** Implementation of hook_menu_alter */
 function advanced_content_menu_alter(&$items){
 	$items['admin/content']['page arguments'] = array('_advanced_content_admin_page');
 	$items['admin/content']['file'] = 'advanced_content.admin.inc';
 	$items['admin/content']['file path'] = drupal_get_path('module', 'advanced_content');
 }
 
-/**
- * Implementation of hook_node_filter
- */
+/** Implementation of hook_node_filter */
 function advanced_content_node_filter(){
 	$default_filters = isset($_SESSION['admin_node_filters']) ? $_SESSION['admin_node_filters'] : array();
 
@@ -70,9 +66,7 @@ function advanced_content_node_filter(){
 	);
 }
 
-/**
- * Implementation of hook_entity_query_alter
- */
+/** Implementation of hook_entity_query_alter */
 function advanced_content_entity_query_alter($query){
 	if(in_array('node_admin_filter', $query->tags) && isset($_SESSION['admin_node_filters'])){
 		if(isset($_SESSION['admin_node_filters']['type'])){
@@ -83,6 +77,23 @@ function advanced_content_entity_query_alter($query){
 		}
 		if(isset($_SESSION['admin_node_filters']['title'])){
 			$query->propertyCondition('title', $_SESSION['admin_node_filters']['title'], 'CONTAINS');
+		}
+	}
+}
+
+/** Implementation of hook_query_TAG_alter
+ * Tag: node_admin_filter
+ */
+function advanced_content_query_node_admin_filter_alter($query){
+	if(!user_access('bypass node access')){
+		if(user_access('view own unpublished content')){
+			$query->condition(db_or()
+				->condition('node.status', NODE_PUBLISHED)
+				->condition('node.uid', $GLOBALS['user']->uid)
+			);
+		}else{
+			// If not, restrict the query to published nodes.
+			$query->condition('node.status', NODE_PUBLISHED);
 		}
 	}
 }

@@ -7,3 +7,7 @@ If module *content\_menu* is enabled, this filters are applied to the "select ex
 ## Dependencies
 
 - None
+
+## Notes
+
+[ChangeLog](CHANGELOG.md)
