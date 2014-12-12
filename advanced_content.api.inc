@@ -15,14 +15,3 @@ function hook_node_filter(){
 		)
 	);
 }
-
-/**
- * Implementation of hook_entity_query_alter
- * Must add field/property conditions to query to apply filters
- * @param EntityFieldQuery $query
- */
-function hook_entity_query_alter($query){
-	if(in_array('node_admin_filter', $query->tags) && isset($_SESSION['admin_node_filters']) && isset($_SESSION['admin_node_filters']['body'])){
-		$query->fieldCondition('body', 'value', $_SESSION['admin_node_filters']['body'], 'CONTAINS');
-	}
-}

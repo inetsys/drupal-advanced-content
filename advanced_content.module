@@ -66,34 +66,34 @@ function advanced_content_node_filter(){
 	);
 }
 
-/** Implementation of hook_entity_query_alter */
-function advanced_content_entity_query_alter($query){
-	if(in_array('node_admin_filter', $query->tags) && isset($_SESSION['admin_node_filters'])){
-		if(isset($_SESSION['admin_node_filters']['type'])){
-			$query->propertyCondition('type', $_SESSION['admin_node_filters']['type']);
-		}
-		if(isset($_SESSION['admin_node_filters']['status'])){
-			$query->propertyCondition('status', $_SESSION['admin_node_filters']['status']);
-		}
-		if(isset($_SESSION['admin_node_filters']['title'])){
-			$query->propertyCondition('title', $_SESSION['admin_node_filters']['title'], 'CONTAINS');
-		}
-	}
-}
-
-/** Implementation of hook_query_TAG_alter
+/** Implements hook_query_TAG_alter
  * Tag: node_admin_filter
  */
 function advanced_content_query_node_admin_filter_alter($query){
+	// Node access conditions
 	if(!user_access('bypass node access')){
 		if(user_access('view own unpublished content')){
+			global $user;
 			$query->condition(db_or()
-				->condition('node.status', NODE_PUBLISHED)
-				->condition('node.uid', $GLOBALS['user']->uid)
+				->condition('n.status', NODE_PUBLISHED)
+				->condition('n.uid', $user->uid)
 			);
 		}else{
 			// If not, restrict the query to published nodes.
-			$query->condition('node.status', NODE_PUBLISHED);
+			$query->condition('n.status', NODE_PUBLISHED);
+		}
+	}
+
+	// Node properties filter
+	if(isset($_SESSION['admin_node_filters'])){
+		if(isset($_SESSION['admin_node_filters']['type'])){
+			$query->condition('n.type', $_SESSION['admin_node_filters']['type']);
+		}
+		if(isset($_SESSION['admin_node_filters']['status'])){
+			$query->condition('n.status', $_SESSION['admin_node_filters']['status']);
+		}
+		if(isset($_SESSION['admin_node_filters']['title'])){
+			$query->condition('n.title', '%'.$_SESSION['admin_node_filters']['title'].'%', 'LIKE');
 		}
 	}
 }

@@ -32,10 +32,10 @@ function _advanced_content_admin_page($form, $form_state){
 			'changed' => format_date($node->changed, 'short'),
 		);
 
-		if ($langcode == LANGUAGE_NONE || isset($languages[$langcode])) {
+		// Multilanguage
+		if($langcode == LANGUAGE_NONE || isset($languages[$langcode])){
 			$body[$node->nid]['language'] = $langcode == LANGUAGE_NONE ? t('Language neutral') : t($languages[$langcode]->name);
-		}
-		else {
+		}else{
 			$body[$node->nid]['language'] = t('Undefined language (@langcode)', array('@langcode' => $langcode));
 		}
 
@@ -152,11 +152,14 @@ function _advanced_content_admin_page($form, $form_state){
 		);
 	}
 
-	global $pager;
-	$pager_info = $pager[0];
-	$first = $pager_info['start'] + 1;
-	$last = min($pager_info['total'], $pager_info['start'] + $pager_info['limit']);
-	$total = $pager_info['total'];
+	// Pager info
+	global $pager_page_array, $pager_total, $pager_total_items, $pager_limits;
+	$element = 0;
+	$total = $pager_total_items[$element];
+	$num_page = $pager_page_array[$element];
+	$elements_per_page = $pager_limits[$element];
+	$first = $num_page * $elements_per_page + 1;
+	$last = min($total, ($num_page + 1) * $elements_per_page);
 
 	if($total){
 		if($first == $last){

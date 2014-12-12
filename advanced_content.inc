@@ -4,7 +4,7 @@
  * Table header definition to manage order in admin/content
  */
 function _advanced_content_admin_list_headers(){
-	return array(
+	$headers = array(
 		'title' => array(
 			'data' => t('Title'),
 			'type' => 'property',
@@ -18,12 +18,7 @@ function _advanced_content_admin_list_headers(){
 			'field' => 'type',
 		),
 		'author' => t('Author'),
-		'status' => array(
-			'data' => t('Status'),
-			'type' => 'property',
-			'specifier' => 'status',
-			'field' => 'status',
-		),
+		'status' => t('Status'),
 		'changed' => array(
 			'data' => t('Updated'),
 			'type' => 'property',
@@ -31,37 +26,37 @@ function _advanced_content_admin_list_headers(){
 			'field' => 'changed',
 			'sort' => 'desc'
 		),
-		'language' => array(
-			'data' => t('Language'),
-			'type' => 'property',
-			'specifier' => 'language',
-			'field' => 'language',
-		),
-		'operations' => array(
-			'data' => t('Operations'))
 	);
+
+	$languages = language_list('enabled');
+	$enabled_languages = $languages[1];
+	if(count($enabled_languages) > 1){
+		$headers['language'] = t('Language');
+	}
+
+	$headers['operations'] = array(
+		'data' => t('Operations')
+	);
+
+	return $headers;
 }
 
 /**
  * Query builder to display nodes in admin/content
  */
 function _advanced_content_get_content(){
-	global $pager;
-
 	$header = _advanced_content_admin_list_headers();
 
-	$query = new EntityFieldQuery();
-	$query->entityCondition('entity_type', 'node');
-	$query->addTag('node_admin_filter');
+	$query = db_select('node', 'n')->extend('PagerDefault')->extend('TableSort');
 
-	$query
-		->pager(variable_get('admin_content_elements_per_page', 20))
-		->tableSort($header)
-		->addTag('node_access');
+	$nids = $query
+		->fields('n', array('nid'))
+		->limit(variable_get('admin_content_elements_per_page', 20))
+		->orderByHeader($header)
+		->addTag('node_admin_filter')
+		->addTag('node_access')
+		->execute()
+		->fetchCol();
 
-	$result = $query->execute();
-
-	$pager[$query->pager['element']] = $query->pager;
-
-	return isset($result['node']) ? entity_load('node', array_keys($result['node'])) : array();
+	return $nids ? node_load_multiple($nids) : array();
 }
