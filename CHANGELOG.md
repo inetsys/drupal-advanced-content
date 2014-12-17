@@ -1,5 +1,14 @@
 # Advanced content
 
+## Version 1.3
+
+Date: 2014/12/17
+
+- Init filters in admin page from GET  
+Allows redirections to administration page with active filters
+
+- Now `hook_node_filter` receives active filters as first parameter
+
 ## Version 1.2
 
 Date: 2014/12/04

@@ -8,6 +8,11 @@ function advanced_content_init(){
 		$defaults['menu_existing_content_selection'] = true;
 		variable_set('views_defaults', $defaults);
 	}
+	// Init filters for admin content page
+	if(current_path() == 'admin/content'){
+		module_load_include('inc', 'advanced_content');
+		$default_filters = _advanced_content_get_default_filters();
+	}
 }
 
 /** Implementation of hook_menu */
@@ -35,9 +40,7 @@ function advanced_content_menu_alter(&$items){
 }
 
 /** Implementation of hook_node_filter */
-function advanced_content_node_filter(){
-	$default_filters = isset($_SESSION['admin_node_filters']) ? $_SESSION['admin_node_filters'] : array();
-
+function advanced_content_node_filter($default_filters = array()){
 	$type_options = array_merge(array('' => '-'), node_type_get_names());
 	$published_options = array(
 		'' => '-',

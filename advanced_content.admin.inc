@@ -79,7 +79,8 @@ function _advanced_content_admin_page($form, $form_state){
 	}
 
 	// Filters
-	$default_filters = isset($_SESSION['admin_node_filters']) ? $_SESSION['admin_node_filters'] : array();
+	$default_filters = _advanced_content_get_default_filters();
+
 	$form['filter'] = array(
 		'#type' => 'fieldset',
 		'#title' => t('Filters'),
@@ -88,7 +89,7 @@ function _advanced_content_admin_page($form, $form_state){
 		'#tree' => true,
 		'#weight' => 2,
 	);
-	foreach(module_invoke_all('node_filter') as $filter => $data) {
+	foreach(module_invoke_all('node_filter', $default_filters) as $filter => $data) {
 		$form['filter'][$filter] = $data;
 	}
 	$form['filter']['submit'] = array(

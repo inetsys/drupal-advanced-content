@@ -60,3 +60,21 @@ function _advanced_content_get_content(){
 
 	return $nids ? node_load_multiple($nids) : array();
 }
+
+/** Helper function to get node filters from GET and SESSION */
+function _advanced_content_get_default_filters(){
+	$default_filters = isset($_SESSION['admin_node_filters']) ? $_SESSION['admin_node_filters'] : array();
+
+	foreach($_GET as $key => $value){
+		if(strpos($key, 'filter_') === 0){
+			$field = substr($key, 7);
+			if($field){
+				$default_filters[$field] = $value;
+				unset($_GET[$key]);
+			}
+		}
+	}
+	$_SESSION['admin_node_filters'] = $default_filters;
+
+	return $default_filters;
+}
