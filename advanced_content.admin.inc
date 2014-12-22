@@ -4,7 +4,9 @@
 function _advanced_content_admin_page($form, $form_state){
 	module_load_include('inc', 'advanced_content');
 
-	$form['#attached']['css'][] = drupal_get_path('module', 'advanced_content').'/advanced_content.admin.css';
+	$form['#attached']['css'][drupal_get_path('module', 'advanced_content').'/advanced_content.admin.css'] = array(
+		'weight' => 100,
+	);
 
 	$languages = language_list();
 	$destination = drupal_get_destination();
@@ -12,7 +14,6 @@ function _advanced_content_admin_page($form, $form_state){
 
 	$header = _advanced_content_admin_list_headers();
 	$body = array();
-
 	foreach($nodes as $node){
 		$langcode = entity_language('node', $node);
 		$l_options = $langcode != LANGUAGE_NONE && isset($languages[$langcode]) ? array('language' => $languages[$langcode]) : array();

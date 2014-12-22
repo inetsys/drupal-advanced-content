@@ -1,5 +1,13 @@
 # Advanced content
 
+## Version 1.x-dev
+
+- Access management  
+Access permission to define node states: published, promoted and sticky  
+Access permission to access unpublished content
+
+- Attached CSS in "administer content" page
+
 ## Version 1.3
 
 Date: 2014/12/17

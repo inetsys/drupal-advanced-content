@@ -26,16 +26,8 @@ function _advanced_content_admin_list_headers(){
 			'field' => 'changed',
 			'sort' => 'desc'
 		),
-	);
-
-	$languages = language_list('enabled');
-	$enabled_languages = $languages[1];
-	if(count($enabled_languages) > 1){
-		$headers['language'] = t('Language');
-	}
-
-	$headers['operations'] = array(
-		'data' => t('Operations')
+		'language' => t('Language'),
+		'operations' => t('Operations'),
 	);
 
 	return $headers;
